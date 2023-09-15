@@ -1,0 +1,39 @@
+version: '3.8'
+#
+# Доступ: https://localhost:8443/nifi/
+#
+# Создать пользователя:
+#   docker exec -it nifi bash
+#   ./bin/nifi.sh set-single-user-credentials admin Zadonsky12345
+#   ./bin/nifi.sh restart
+# 
+services:
+  nifi:
+#      image: apache/nifi
+      image: alexsuf/nifi
+      container_name: nifi
+      restart: always
+      ports:
+       - 8443:8443  # https://127.0.0.1:8443/nifi/
+       - 8181:8181  # HTTPS
+      environment:
+        SINGLE_USER_CREDENTIALS_USERNAME: admin
+        SINGLE_USER_CREDENTIALS_PASSWORD: Zadonsky12345
+        TZ: Europe/Moscow
+      volumes:
+       - ./data:/opt/nifi/nifi-current/data
+       - ./opt/toolkit:/opt/nifi/nifi-toolkit-current
+       - ./opt/run:/opt/nifi/nifi-current/run
+       - ./opt/logs:/opt/nifi/nifi-current/logs
+       - ./opt/state:/opt/nifi/nifi-current/state
+       - nifi_conf:/opt/nifi/nifi-current/conf
+       - ./opt/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+       - ./opt/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+       - ./opt/database_repository:/opt/nifi/nifi-current/database_repository
+       - ./opt/content_repository:/opt/nifi/nifi-current/content_repository
+       - ./in:/app/in
+       - ./out:/app/out
+
+volumes:
+  nifi_conf:
+    external: true
